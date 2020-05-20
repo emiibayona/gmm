@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.magicbussines.gmm.interfaceServices.IUsuarioService;
-import com.magicbussines.gmm.models.Usuario;
+import com.magicbussines.gmm.model.Usuario;
 
 @RestController
 @RequestMapping("/usuario")

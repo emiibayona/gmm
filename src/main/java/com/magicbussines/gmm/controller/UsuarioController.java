@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.magicbussines.gmm.interfaceServices.IUsuarioService;
-import com.magicbussines.gmm.models.Usuario;
+import com.magicbussines.gmm.model.Llegada;
+import com.magicbussines.gmm.model.Usuario;
 
 @Controller
 @RequestMapping
 public class UsuarioController {
-	
+		
 	@Autowired
 	private IUsuarioService userService;
 	

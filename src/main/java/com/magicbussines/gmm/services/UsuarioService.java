@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.magicbussines.gmm.interfaceServices.IUsuarioService;
 import com.magicbussines.gmm.interfaces.IUsuario;
-import com.magicbussines.gmm.models.Usuario;
+import com.magicbussines.gmm.model.Usuario;
 @Service
 public class UsuarioService implements IUsuarioService{
 	

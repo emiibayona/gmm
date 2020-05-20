@@ -1,4 +1,4 @@
-package com.magicbussines.gmm.models;
+package com.magicbussines.gmm.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

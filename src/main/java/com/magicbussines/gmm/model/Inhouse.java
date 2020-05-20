@@ -1,41 +1,50 @@
-package com.magicbussines.gmm.models;
+package com.magicbussines.gmm.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name="Inhouse")
-public class Inhouse { 
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@Inheritance
+public abstract class Inhouse { 
 	//se debe generar trigger cuando se haga una accion sobre un Inhouse
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	protected int id;
 	
+	@Column
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale="America/Montevideo")
-	private LocalDateTime timestamp;
+	protected LocalDateTime timestamp;
 	
 	//Notes about in-house
-	private String comentario;
+	@Column
+	protected String comentario;
 	
 		// enumerado por tipo de usuario sobre el inhouse
-	/*private enum TipoPersona{
+	private enum TipoPersona{
 			Inquilino,
 			Propietario
 		};
-	private TipoPersona tipoPersona;
+	@Column
+	protected TipoPersona tipoPersona;
 	
 	// FK con apto
 	@ManyToOne
 	@JoinColumn(name="nroApto")
-	private Apartamento apto;*/
+	protected Apartamento apto;
 
 	public int getId() {
 		return id;
@@ -61,26 +70,37 @@ public class Inhouse {
 		this.comentario = comentario;
 	}
 
+	public TipoPersona getTipoPersona() {
+		return tipoPersona;
+	}
 
-	/*public Apartamento getApto() {
+	public void setTipoPersona(TipoPersona tipoPersona) {
+		this.tipoPersona = tipoPersona;
+	}
+
+	public Apartamento getApto() {
 		return apto;
 	}
 
 	public void setApto(Apartamento apto) {
 		this.apto = apto;
-	}*/
+	}
 
-	public Inhouse(int id, LocalDateTime timestamp, String comentario) {
+	public Inhouse(int id, LocalDateTime timestamp, String comentario, TipoPersona tipoPersona, Apartamento apto) {
 		super();
 		this.id = id;
 		this.timestamp = timestamp;
 		this.comentario = comentario;
+		this.tipoPersona = tipoPersona;
+		this.apto = apto;
 	}
 
 	public Inhouse() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	
 	
 	
 }

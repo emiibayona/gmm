@@ -3,7 +3,7 @@ package com.magicbussines.gmm.interfaceServices;
 import java.util.List;
 import java.util.Optional;
 
-import com.magicbussines.gmm.models.Usuario;
+import com.magicbussines.gmm.model.Usuario;
 
 public interface IUsuarioService {
 
