@@ -1,12 +1,13 @@
 package com.magicbussines.gmm.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 
 @Entity
-public class Entrada extends Inhouse{
+public class InhouseEntrada extends Inhouse{
 
-	public Entrada() {
+	public InhouseEntrada() {
 		// TODO Auto-generated constructor stub
 	}
 

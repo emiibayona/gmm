@@ -16,7 +16,8 @@ public class Apartamento {
 	@Column
 	private boolean libre;
 	
-	//@Column
-	//private Propietario propietario;
+	@ManyToOne
+	@JoinColumn(name="documento")
+	private PersonaPropietario propietario;
 	
 }

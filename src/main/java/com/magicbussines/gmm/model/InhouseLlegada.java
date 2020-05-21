@@ -3,9 +3,9 @@ package com.magicbussines.gmm.model;
 import javax.persistence.*;
 
 @Entity
-public class Llegada extends Inhouse{
+public class InhouseLlegada extends Inhouse{
 	
-	public Llegada() {
+	public InhouseLlegada() {
 		// TODO Auto-generated constructor stub
 	}
 }
