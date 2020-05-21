@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.magicbussines.gmm.interfaceServices.IUsuarioService;
+import com.magicbussines.gmm.model.Entrada;
+import com.magicbussines.gmm.model.Inhouse;
 import com.magicbussines.gmm.model.Llegada;
 import com.magicbussines.gmm.model.Usuario;
 
@@ -26,6 +28,7 @@ public class UsuarioController {
 	
 	@GetMapping("/")
 	public String listar(Model model) {
+		Entrada ih = new Entrada();
 		List<Usuario> usuarios = userService.listar();
 		model.addAttribute("usuarios",usuarios);
 		return "listar";

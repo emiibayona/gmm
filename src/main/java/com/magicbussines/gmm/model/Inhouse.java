@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,21 +13,31 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Persistence;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@Entity
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 //@Inheritance
+
+@MappedSuperclass
 public abstract class Inhouse { 
 	//se debe generar trigger cuando se haga una accion sobre un Inhouse
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected int id;
 	
 	@Column
+	@NotNull
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale="America/Montevideo")
 	protected LocalDateTime timestamp;
 	
@@ -34,14 +46,17 @@ public abstract class Inhouse {
 	protected String comentario;
 	
 		// enumerado por tipo de usuario sobre el inhouse
+		// revisar que no me gusta pariente, don't like it
 	private enum TipoPersona{
 			Inquilino,
 			Propietario
 		};
 	@Column
+	@NotNull
 	protected TipoPersona tipoPersona;
 	
 	// FK con apto
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name="nroApto")
 	protected Apartamento apto;
