@@ -12,4 +12,14 @@ public class ContactoInquilino extends  Contacto {
 	@ManyToOne
 	@JoinColumn(name="documento")
 	private PersonaInquilino inquilino;
+
+	public PersonaInquilino getInquilino() {
+		return inquilino;
+	}
+
+	public void setInquilino(PersonaInquilino inquilino) {
+		this.inquilino = inquilino;
+	}
+	
+	
 }

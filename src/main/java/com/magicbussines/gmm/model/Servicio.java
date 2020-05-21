@@ -40,7 +40,81 @@ public abstract class Servicio {
 	
 	@Column
 	protected String notas;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public LocalDateTime getSolicitado() {
+		return solicitado;
+	}
+
+	public void setSolicitado(LocalDateTime solicitado) {
+		this.solicitado = solicitado;
+	}
+
+	public LocalDateTime getHecho() {
+		return hecho;
+	}
+
+	public void setHecho(LocalDateTime hecho) {
+		this.hecho = hecho;
+	}
+
+	public float getCosto() {
+		return costo;
+	}
+
+	public void setCosto(float costo) {
+		this.costo = costo;
+	}
+
+	public boolean isInterno() {
+		return interno;
+	}
+
+	public void setInterno(boolean interno) {
+		this.interno = interno;
+	}
+
+	public String getNotas() {
+		return notas;
+	}
+
+	public void setNotas(String notas) {
+		this.notas = notas;
+	}
+
+	public Servicio(int id, String nombre, @NotNull LocalDateTime solicitado, @NotNull LocalDateTime hecho, float costo,
+			boolean interno, String notas) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.solicitado = solicitado;
+		this.hecho = hecho;
+		this.costo = costo;
+		this.interno = interno;
+		this.notas = notas;
+	}
+
+	public Servicio() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	
 	//SET and GET
+	
 	
 }

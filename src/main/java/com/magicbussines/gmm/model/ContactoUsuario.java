@@ -12,4 +12,14 @@ public class ContactoUsuario extends Contacto{
 	@ManyToOne
 	@JoinColumn(name="documento")
 	private PersonaUsuario usuario;
+
+	public PersonaUsuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(PersonaUsuario usuario) {
+		this.usuario = usuario;
+	}
+	
+	
 }

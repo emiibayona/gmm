@@ -10,4 +10,13 @@ public class ServicioInquilino extends Servicio {
 	@JoinColumn(name="documento")
 	private PersonaInquilino inquilino;
 
+	public PersonaInquilino getInquilino() {
+		return inquilino;
+	}
+
+	public void setInquilino(PersonaInquilino inquilino) {
+		this.inquilino = inquilino;
+	}
+
+	
 }

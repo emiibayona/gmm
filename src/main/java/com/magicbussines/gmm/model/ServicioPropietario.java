@@ -11,4 +11,14 @@ public class ServicioPropietario extends Servicio{
 	@ManyToOne
 	@JoinColumn(name="documento")
 	private PersonaPropietario propietario;
+
+	public PersonaPropietario getPropietario() {
+		return propietario;
+	}
+
+	public void setPropietario(PersonaPropietario propietario) {
+		this.propietario = propietario;
+	}
+	
+	
 }
