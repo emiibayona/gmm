@@ -22,9 +22,6 @@ public abstract class Persona {
 	@Column
 	protected String apellido2;
 
-	@Column
-	protected Contacto contacto;
-
 	public String getDocumento() {
 		return documento;
 	}
@@ -57,21 +54,13 @@ public abstract class Persona {
 		this.apellido2 = apellido2;
 	}
 
-	public Contacto getContacto() {
-		return contacto;
-	}
 
-	public void setContacto(Contacto contacto) {
-		this.contacto = contacto;
-	}
-
-	public Persona(String documento, String nombre, String apellido1, String apellido2, Contacto contacto) {
+	public Persona(String documento, String nombre, String apellido1, String apellido2) {
 		super();
 		this.documento = documento;
 		this.nombre = nombre;
 		this.apellido1 = apellido1;
 		this.apellido2 = apellido2;
-		this.contacto = contacto;
 	}
 
 	public Persona() {
