@@ -1,6 +1,5 @@
 package com.magicbussines.gmm.controllers;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,35 +15,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.magicbussines.gmm.interfaces.IPersonaInquilino;
 import com.magicbussines.gmm.interfaces.IPersonaPropietario;
+import com.magicbussines.gmm.interfaces.IPersonaUsuario;
+import com.magicbussines.gmm.model.PersonaInquilino;
 import com.magicbussines.gmm.model.PersonaPropietario;
+import com.magicbussines.gmm.model.PersonaUsuario;
 
 @RestController
 @RequestMapping("/persona")
 public class ControllerPersona {
 
 	@Autowired
-	private IPersonaPropietario _persona;
+	private IPersonaPropietario _propietario;
+	@Autowired
+	private IPersonaInquilino _inqulino;
+	@Autowired
+	private IPersonaUsuario _usuario;
 	
-	@GetMapping("/")
-	public ResponseEntity<Object> persona() {
-		List<PersonaPropietario> personas = (List<PersonaPropietario>) _persona.List();
-		if(personas.isEmpty()) {
+	
+	// ***********************************************************************************************************************
+	// ================================= SECCION DEL CONTROLADOR PARA PERSONA_PROPIETARIO =================================== 
+	// ***********************************************************************************************************************
+	@GetMapping("/propietario/")
+	public ResponseEntity<Object> PropietarioList() {
+		List<PersonaPropietario> propietarios = (List<PersonaPropietario>) _propietario.List();
+		if(propietarios.isEmpty()) {
 			return new ResponseEntity<Object>("FALLO", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Object>(personas,HttpStatus.OK);
+		return new ResponseEntity<Object>(propietarios,HttpStatus.OK);
 	}
 	
-
-		//VeMec vemecSaved = vemecService.save(vemec);
-	
-	@PostMapping("/")
-	public ResponseEntity<Object> savePersona(@Valid @RequestBody PersonaPropietario data){
+	@PostMapping("/propietario/")
+	public ResponseEntity<Object> savePropietario(@Valid @RequestBody PersonaPropietario data){
 		try {
-			if (!_persona.Entity(data.getDocumento()).isEmpty()){
+			if (!_propietario.Entity(data.getDocumento()).isEmpty()){
 				return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
 			}
-			PersonaPropietario nuevaPersona = _persona.Save(data);
+			PersonaPropietario nuevaPersona = _propietario.Save(data);
 			return new ResponseEntity<Object>(nuevaPersona, HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -53,20 +61,111 @@ public class ControllerPersona {
 			
 	}	
 	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> delete(@PathVariable(value = "id") String id){
+	@DeleteMapping("/propietario/{id}")
+	public ResponseEntity<Object> deletePropietario(@PathVariable(value = "id") String id){
 		try {
-			PersonaPropietario pp = _persona.Entity(id).get();
+			PersonaPropietario pp = _propietario.Entity(id).get();
 			if (pp == null){
 				return new ResponseEntity<Object>("No existe el Propietario con "+id, HttpStatus.NOT_FOUND);
 			}
-			_persona.Delete(id);
+			_propietario.Delete(id);
 			return new ResponseEntity<Object>(pp, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
+	
+	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+	// =================================== SECCION DEL CONTROLADOR PARA PERSONA_INQULINO ===================================== 
+	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+	
+	@GetMapping("/inquilino/")
+	public ResponseEntity<Object> InquilinoList() {
+		List<PersonaInquilino> inquilinos = (List<PersonaInquilino>) _inqulino.List();
+		if(inquilinos.isEmpty()) {
+			return new ResponseEntity<Object>("FALLO", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Object>(inquilinos,HttpStatus.OK);
+	}
+	
+	@PostMapping("/inquilino/")
+	public ResponseEntity<Object> saveInquilino(@Valid @RequestBody PersonaInquilino data){
+		try {
+			if (!_inqulino.Entity(data.getDocumento()).isEmpty()){
+				return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
+			}
+			PersonaInquilino nuevaInquilino = _inqulino.Save(data);
+			return new ResponseEntity<Object>(nuevaInquilino, HttpStatus.OK);
+		} catch(Exception e) {
+			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+			
+	}	
+	
+	@DeleteMapping("/inquilino/{id}")
+	public ResponseEntity<Object> deleteInquilino(@PathVariable(value = "id") String id){
+		try {
+			PersonaInquilino pp = _inqulino.Entity(id).get();
+			if (pp == null){
+				return new ResponseEntity<Object>("No existe el Propietario con "+id, HttpStatus.NOT_FOUND);
+			}
+			_inqulino.Delete(id);
+			return new ResponseEntity<Object>(pp, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+	// =================================== SECCION DEL CONTROLADOR PARA PERSONA_USUARIO ====================================== 
+	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+
+	@GetMapping("/usuario/")
+	public ResponseEntity<Object> UsuarioList() {
+		List<PersonaUsuario> usuarios = (List<PersonaUsuario>) _usuario.List();
+		if(usuarios.isEmpty()) {
+			return new ResponseEntity<Object>("FALLO", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Object>(usuarios,HttpStatus.OK);
+	}
+	
+	@PostMapping("/usuario/")
+	public ResponseEntity<Object> saveUsuario(@Valid @RequestBody PersonaUsuario data){
+		try {
+			if (!_usuario.Entity(data.getLogin(),data.getPassword()).isEmpty()){
+				return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
+			}
+			PersonaUsuario nuevoUsuario = _usuario.Save(data);
+			return new ResponseEntity<Object>(nuevoUsuario, HttpStatus.OK);
+		} catch(Exception e) {
+			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+			
+	}	
+	
+	@DeleteMapping("/usuario/{id}")
+	public ResponseEntity<Object> deleteUsuario(@PathVariable(value = "id") String id){
+		try {
+			PersonaUsuario user = _usuario.EntityById(id).get();
+			if (user == null){
+				return new ResponseEntity<Object>("No existe el Propietario con "+id, HttpStatus.NOT_FOUND);
+			}
+			_usuario.Delete(id);
+			return new ResponseEntity<Object>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+
 	
 	
 }

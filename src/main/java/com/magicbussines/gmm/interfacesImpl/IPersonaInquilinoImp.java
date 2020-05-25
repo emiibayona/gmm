@@ -2,38 +2,36 @@ package com.magicbussines.gmm.interfacesImpl;
 
 import java.util.Optional;
 
-import javax.persistence.IdClass;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+import com.magicbussines.gmm.interfaces.IPersonaInquilino;
 import com.magicbussines.gmm.interfaces.IPersonaPropietario;
-import com.magicbussines.gmm.model.Persona;
+import com.magicbussines.gmm.model.PersonaInquilino;
 import com.magicbussines.gmm.model.PersonaPropietario;
-import com.magicbussines.gmm.repos.RepositoryPersona;
+import com.magicbussines.gmm.repos.RepositoryPersonaInquilino;
+import com.magicbussines.gmm.repos.RepositoryPersonaPropietario;
 
 @Service
-public class IPersonaPropietarioImpl implements IPersonaPropietario {
+public class IPersonaInquilinoImp implements IPersonaInquilino {
 
 	@Autowired
-	private RepositoryPersona _repo;
+	private RepositoryPersonaInquilino _repo;
 	
 	@Override
-	public Iterable<PersonaPropietario> List() {
+	public Iterable<PersonaInquilino> List() {
 		// TODO Auto-generated method stub
-		return _repo.findAll();
+		return (Iterable<PersonaInquilino>)_repo.findAll();
 	}
 
 	@Override
-	public Optional<PersonaPropietario> Entity(String id) {
+	public Optional<PersonaInquilino> Entity(String id) {
 		// TODO Auto-generated method stub
-		return (Optional<PersonaPropietario>) _repo.findById(id);
+		return _repo.findById(id);
 	}
 
 	@Override
-	public PersonaPropietario Save(PersonaPropietario obj) {
+	public PersonaInquilino Save(PersonaInquilino obj) {
 		// TODO Auto-generated method stub
 		return _repo.save(obj);
 	}
@@ -42,7 +40,6 @@ public class IPersonaPropietarioImpl implements IPersonaPropietario {
 	public void Delete(String id) {
 		// TODO Auto-generated method stub
 		_repo.deleteById(id);
-		
 	}
 
 
