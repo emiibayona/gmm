@@ -14,7 +14,7 @@ import com.magicbussines.gmm.model.PersonaPropietario;
 import com.magicbussines.gmm.model.PersonaUsuario;
 
 //@RepositoryDefinition(domainClass = Persona.class, idClass = Persona.class)
-public abstract interface RepositoryPersonaUsuario extends CrudRepository<PersonaUsuario, String>{
+public interface RepositoryPersonaUsuario extends CrudRepository<PersonaUsuario, String>{
 
 	@Query(nativeQuery = true, value ="select * from PersonaUsuario where login =?1 and password =?2")
 	public Optional<PersonaUsuario> findByLoginPassword(String login, String password);

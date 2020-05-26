@@ -6,7 +6,7 @@ import com.magicbussines.gmm.model.PersonaPropietario;
 public interface IPersonaPropietario {
 	public Iterable<PersonaPropietario> List();
 	public Optional<PersonaPropietario> Entity(String id);
-	public PersonaPropietario Save(PersonaPropietario obj); //save funciona para la primera vez o para update
+	public PersonaPropietario savePropietario(PersonaPropietario obj); //save funciona para la primera vez o para update
 	public void Delete(String id);
 	
 }

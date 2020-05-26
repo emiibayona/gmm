@@ -12,7 +12,7 @@ import org.springframework.data.repository.RepositoryDefinition;
 import com.magicbussines.gmm.model.Persona;
 import com.magicbussines.gmm.model.PersonaPropietario;
 
-//@RepositoryDefinition(domainClass = Persona.class, idClass = Persona.class)
-public abstract interface RepositoryPersonaPropietario extends CrudRepository<PersonaPropietario, String>{
+
+public interface RepositoryPersonaPropietario extends CrudRepository<PersonaPropietario, String>{
 
 }

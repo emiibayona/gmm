@@ -13,7 +13,7 @@ import com.magicbussines.gmm.model.PersonaInquilino;
 import com.magicbussines.gmm.model.PersonaPropietario;
 
 //@RepositoryDefinition(domainClass = Persona.class, idClass = Persona.class)
-public abstract interface RepositoryPersonaInquilino extends CrudRepository<PersonaInquilino, String>{
+public interface RepositoryPersonaInquilino extends CrudRepository<PersonaInquilino, String>{
 
 
 }

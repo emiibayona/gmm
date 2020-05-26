@@ -3,11 +3,12 @@ package com.magicbussines.gmm.interfacesImpl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.magicbussines.gmm.interfaces.IPersonaUsuario;
 import com.magicbussines.gmm.model.PersonaUsuario;
 import com.magicbussines.gmm.repos.RepositoryPersonaUsuario;
-
+@Service
 public class IPersonaUsuarioImp implements IPersonaUsuario {
 
 	@Autowired

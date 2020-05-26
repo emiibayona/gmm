@@ -24,13 +24,14 @@ public class IPersonaPropietarioImp implements IPersonaPropietario {
 	@Override
 	public Optional<PersonaPropietario> Entity(String id) {
 		// TODO Auto-generated method stub
-		return null;
+		return _repo.findById(id);
 	}
 
 	@Override
-	public PersonaPropietario Save(PersonaPropietario obj) {
+	public PersonaPropietario savePropietario(PersonaPropietario obj) {
 		// TODO Auto-generated method stub
-		return _repo.save(obj);
+		PersonaPropietario pp = _repo.save(obj);
+		return pp;
 	}
 
 	@Override

@@ -48,17 +48,17 @@ public class ControllerPersona {
 	
 	@PostMapping("/propietario/")
 	public ResponseEntity<Object> savePropietario(@Valid @RequestBody PersonaPropietario data){
+		if (_propietario.Entity(data.getDocumento()).isPresent()){
+			return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
+		}
 		try {
-			if (!_propietario.Entity(data.getDocumento()).isEmpty()){
-				return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
-			}
-			PersonaPropietario nuevaPersona = _propietario.Save(data);
+			
+			PersonaPropietario nuevaPersona = _propietario.savePropietario(data);
 			return new ResponseEntity<Object>(nuevaPersona, HttpStatus.OK);
 		} catch(Exception e) {
-			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-			
 	}	
 	
 	@DeleteMapping("/propietario/{id}")
@@ -139,7 +139,7 @@ public class ControllerPersona {
 	@PostMapping("/usuario/")
 	public ResponseEntity<Object> saveUsuario(@Valid @RequestBody PersonaUsuario data){
 		try {
-			if (!_usuario.Entity(data.getLogin(),data.getPassword()).isEmpty()){
+			if (_usuario.EntityById(data.getDocumento()).isPresent()){
 				return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
 			}
 			PersonaUsuario nuevoUsuario = _usuario.Save(data);
