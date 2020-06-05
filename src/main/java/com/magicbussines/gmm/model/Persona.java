@@ -1,10 +1,14 @@
 package com.magicbussines.gmm.model;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @MappedSuperclass
 public abstract class Persona { 
@@ -21,6 +25,11 @@ public abstract class Persona {
 	
 	@Column
 	protected String apellido2;
+	
+	@Column
+	@NotNull
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale="America/Montevideo")
+	protected LocalDateTime createdOn;
 
 	public String getDocumento() {
 		return documento;
@@ -54,6 +63,13 @@ public abstract class Persona {
 		this.apellido2 = apellido2;
 	}
 
+	public LocalDateTime getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(LocalDateTime createdOn) {
+		this.createdOn = createdOn;
+	}
 
 	public Persona(String documento, String nombre, String apellido1, String apellido2) {
 		super();
@@ -65,11 +81,8 @@ public abstract class Persona {
 
 	public Persona() {
 		super();
+		this.createdOn = LocalDateTime.now();
 		// TODO Auto-generated constructor stub
 	}
-
-
-	//GET AND SET
-	
 	
 }

@@ -6,6 +6,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class ServicioInquilino extends Servicio {
+	
 	@ManyToOne
 	@JoinColumn(name="documento")
 	private PersonaInquilino inquilino;

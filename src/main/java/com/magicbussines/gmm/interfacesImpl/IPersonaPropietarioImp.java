@@ -40,5 +40,17 @@ public class IPersonaPropietarioImp implements IPersonaPropietario {
 		_repo.deleteById(id);
 	}
 
+	@Override
+	public Iterable<PersonaPropietario> ListarActivos() {
+		// TODO Auto-generated method stub
+		return _repo.findAllActive();
+	}
+
+	@Override
+	public Iterable<PersonaPropietario> ListarInactivos() {
+		// TODO Auto-generated method stub
+		return _repo.findAllInactive();
+	}
+
 
 }

@@ -2,6 +2,7 @@ package com.magicbussines.gmm.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,9 +30,9 @@ public class Nota {
 	
 	@Column
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale="America/Montevideo")
-	private LocalDateTime timestamp;
+	private LocalDateTime createdOn;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name="documento")
 	private PersonaUsuario usuario;
 
@@ -59,12 +60,12 @@ public class Nota {
 		this.texto = texto;
 	}
 
-	public LocalDateTime getTimestamp() {
-		return timestamp;
+	public LocalDateTime getCreatedOn() {
+		return createdOn;
 	}
 
-	public void setTimestamp(LocalDateTime timestamp) {
-		this.timestamp = timestamp;
+	public void setCreatedOn(LocalDateTime createdOn) {
+		this.createdOn = createdOn;
 	}
 
 	public PersonaUsuario getUsuario() {
@@ -75,17 +76,17 @@ public class Nota {
 		this.usuario = usuario;
 	}
 
-	public Nota(int id, String titulo, String texto, LocalDateTime timestamp, PersonaUsuario usuario) {
+	public Nota(int id, String titulo, String texto, PersonaUsuario usuario) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
 		this.texto = texto;
-		this.timestamp = timestamp;
 		this.usuario = usuario;
 	}
 
 	public Nota() {
 		super();
+		this.createdOn = LocalDateTime.now();
 		// TODO Auto-generated constructor stub
 	}
 	

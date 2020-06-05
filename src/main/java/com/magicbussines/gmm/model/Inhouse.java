@@ -30,6 +30,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @MappedSuperclass
 public abstract class Inhouse { 
+	
+	// >> I.ATRIBUTOS
+	
 	//se debe generar trigger cuando se haga una accion sobre un Inhouse
 
 	@Id
@@ -55,12 +58,17 @@ public abstract class Inhouse {
 	@NotNull
 	protected TipoPersona tipoPersona;
 	
-	// FK con apto
+	// FK with apartment
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name="nroApto")
 	protected Apartamento apto;
 
+	@Column
+	protected String documento;
+	
+	// >> F.ATRIBUTOS
+	
 	public int getId() {
 		return id;
 	}
@@ -100,10 +108,20 @@ public abstract class Inhouse {
 	public void setApto(Apartamento apto) {
 		this.apto = apto;
 	}
+	
+	
+	public String getDocumento() {
+		return documento;
+	}
 
-	public Inhouse(int id, LocalDateTime timestamp, String comentario, TipoPersona tipoPersona, Apartamento apto) {
+	public void setDocumento(String documento) {
+		this.documento = documento;
+	}
+
+	public Inhouse(int id,String documento, LocalDateTime timestamp, String comentario, TipoPersona tipoPersona, Apartamento apto) {
 		super();
 		this.id = id;
+		this.documento = documento;
 		this.timestamp = timestamp;
 		this.comentario = comentario;
 		this.tipoPersona = tipoPersona;

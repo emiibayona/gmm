@@ -1,5 +1,6 @@
 package com.magicbussines.gmm.interfacesImpl;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,32 @@ public class IPersonaUsuarioImp implements IPersonaUsuario {
 		// TODO Auto-generated method stub
 		_repo.deleteById(id);
 	}
+
+	@Override
+	public void DesactivateUser(String id) {
+		// TODO Auto-generated method stub
+		_repo.desactivarUser(id);
+		//Logic deleted for user
+	}
+
+	@Override
+	public void ReactivateUser(String id) {
+		// TODO Auto-generated method stub
+		_repo.reactUser(id);	
+	}
+
+	@Override
+	public Iterable<PersonaUsuario> ListarActivos() {
+		// TODO Auto-generated method stub
+		return _repo.findAllActive();
+	}
+
+	@Override
+	public Iterable<PersonaUsuario> ListarInactivos() {
+		// TODO Auto-generated method stub
+		return _repo.findAllInactive();
+	}
+	
+	
 
 }

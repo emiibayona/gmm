@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @MappedSuperclass
 public abstract class Servicio {
 
+	// >>> ATRIBUTOS
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected int id;
@@ -36,10 +37,9 @@ public abstract class Servicio {
 	protected float costo;
 	
 	@Column
-	protected boolean interno;
-	
-	@Column
 	protected String notas;
+	
+	// >>> FIN ATRIBUTOS
 
 	public int getId() {
 		return id;
@@ -81,14 +81,6 @@ public abstract class Servicio {
 		this.costo = costo;
 	}
 
-	public boolean isInterno() {
-		return interno;
-	}
-
-	public void setInterno(boolean interno) {
-		this.interno = interno;
-	}
-
 	public String getNotas() {
 		return notas;
 	}
@@ -97,15 +89,13 @@ public abstract class Servicio {
 		this.notas = notas;
 	}
 
-	public Servicio(int id, String nombre, @NotNull LocalDateTime solicitado, @NotNull LocalDateTime hecho, float costo,
-			boolean interno, String notas) {
+	public Servicio(int id, String nombre, @NotNull LocalDateTime solicitado, @NotNull LocalDateTime hecho, float costo, String notas) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.solicitado = solicitado;
 		this.hecho = hecho;
 		this.costo = costo;
-		this.interno = interno;
 		this.notas = notas;
 	}
 

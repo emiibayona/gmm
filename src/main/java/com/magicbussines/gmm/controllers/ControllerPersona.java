@@ -1,20 +1,27 @@
 package com.magicbussines.gmm.controllers;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.magicbussines.gmm.interfaces.IPersonaInquilino;
 import com.magicbussines.gmm.interfaces.IPersonaPropietario;
 import com.magicbussines.gmm.interfaces.IPersonaUsuario;
@@ -45,6 +52,7 @@ public class ControllerPersona {
 		}
 		return new ResponseEntity<Object>(propietarios,HttpStatus.OK);
 	}
+		
 	
 	@PostMapping("/propietario/")
 	public ResponseEntity<Object> savePropietario(@Valid @RequestBody PersonaPropietario data){
@@ -52,8 +60,8 @@ public class ControllerPersona {
 			return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
 		}
 		try {
-			
-			PersonaPropietario nuevaPersona = _propietario.savePropietario(data);
+			PersonaPropietario nuevaPersona = new PersonaPropietario();
+			nuevaPersona = _propietario.savePropietario(data);
 			return new ResponseEntity<Object>(nuevaPersona, HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -97,13 +105,12 @@ public class ControllerPersona {
 			if (!_inqulino.Entity(data.getDocumento()).isEmpty()){
 				return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
 			}
-			PersonaInquilino nuevaInquilino = _inqulino.Save(data);
+			PersonaInquilino nuevaInquilino = new PersonaInquilino();
+			 nuevaInquilino = _inqulino.Save(data);
 			return new ResponseEntity<Object>(nuevaInquilino, HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-			
 	}	
 	
 	@DeleteMapping("/inquilino/{id}")
@@ -123,18 +130,62 @@ public class ControllerPersona {
 	
 	// ***********************************************************************************************************************
 	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
 	// =================================== SECCION DEL CONTROLADOR PARA PERSONA_USUARIO ====================================== 
 	// ***********************************************************************************************************************
 	// ***********************************************************************************************************************
-
+	// ***********************************************************************************************************************
+	
+	
 	@GetMapping("/usuario/")
 	public ResponseEntity<Object> UsuarioList() {
 		List<PersonaUsuario> usuarios = (List<PersonaUsuario>) _usuario.List();
 		if(usuarios.isEmpty()) {
-			return new ResponseEntity<Object>("FALLO", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Object>("No hay usuarios registrados", HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<Object>(usuarios,HttpStatus.OK);
 	}
+	
+	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+	
+	@GetMapping("/usuario/activos")
+	public ResponseEntity<Object> UsuarioListaActivos() {
+		List<PersonaUsuario> usuarios = (List<PersonaUsuario>) _usuario.ListarActivos();
+		if(usuarios.isEmpty()) {
+			return new ResponseEntity<Object>("No hay usuarios registrados", HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<Object>(usuarios,HttpStatus.OK);
+	}
+	
+		// ***********************************************************************************************************************
+		// ***********************************************************************************************************************
+		
+	@GetMapping("/usuario/inactivos")
+	public ResponseEntity<Object> UsuarioListaInactivos() {
+		List<PersonaUsuario> usuarios = (List<PersonaUsuario>) _usuario.ListarInactivos();
+		if(usuarios.isEmpty()) {
+			return new ResponseEntity<Object>("No hay usuarios registrados", HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<Object>(usuarios,HttpStatus.OK);
+	}
+	
+		// ***********************************************************************************************************************
+		// ***********************************************************************************************************************
+		
+	
+	@GetMapping("/usuario/{id}")
+	public ResponseEntity<Object> userUser(@PathVariable(value = "id") String id) {
+		Optional<PersonaUsuario> usuarios = _usuario.EntityById(id);
+		if(usuarios.isEmpty()) {
+			return new ResponseEntity<Object>("No existe usuario con el documento "+id, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<Object>(usuarios,HttpStatus.OK);
+	}
+	
+	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+
 	
 	@PostMapping("/usuario/")
 	public ResponseEntity<Object> saveUsuario(@Valid @RequestBody PersonaUsuario data){
@@ -142,26 +193,70 @@ public class ControllerPersona {
 			if (_usuario.EntityById(data.getDocumento()).isPresent()){
 				return new ResponseEntity<Object>("No se puede poner dos usuarios con el mismo id: "+data.getDocumento(), HttpStatus.NOT_FOUND);
 			}
-			PersonaUsuario nuevoUsuario = _usuario.Save(data);
-			return new ResponseEntity<Object>(nuevoUsuario, HttpStatus.OK);
+			PersonaUsuario nuevoUsuario = new PersonaUsuario();
+			nuevoUsuario = _usuario.Save(data);
+			return new ResponseEntity<Object>(nuevoUsuario, HttpStatus.CREATED);
 		} catch(Exception e) {
 			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-			
 	}	
 	
-	@DeleteMapping("/usuario/{id}")
-	public ResponseEntity<Object> deleteUsuario(@PathVariable(value = "id") String id){
+	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+
+	//How is the best way to reactivate a user?
+	@PutMapping("/usuario/estado")
+	public ResponseEntity<Object> reactivateUser(@RequestBody JsonNode data) throws JsonParseException, JsonMappingException, IOException {
+		try {
+			if (_usuario.EntityById(data.get("documento_usuario").asText()).isPresent()) {
+				if (data.get("flag").asText().contentEquals("reactivar")) {
+					try {
+						
+							_usuario.ReactivateUser(data.get("documento_usuario").asText());// ACCION
+							return new ResponseEntity<Object>("Usuario con documento: "+data.get("documento_usuario").asText()+" activado correctamente",HttpStatus.OK);
+							//IF USUARIO HA SIDO REACTIVADO
+					} catch (Exception e) {
+						// TODO: handle exception
+						//ERROR
+						return new ResponseEntity<Object>(e,HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				} else if (data.get("flag").asText().contentEquals("desactivar"))
+				{ 
+					_usuario.DesactivateUser(data.get("documento_usuario").asText()); // ACCION
+					return new ResponseEntity<Object>("Usuario con documento: "+data.get("documento_usuario").asText()+" desactivado correctamente",HttpStatus.OK);
+					//IF USUARIO HA SIDO DESACTIVADO
+				} else {
+					//ELSE COMANDO EQUIVADO
+					return new ResponseEntity<Object>("Solo dispone de las opciones 'desactivar' y 'reactivar'",HttpStatus.BAD_REQUEST);
+				}
+			}
+			else {
+				return new ResponseEntity<Object>("No existe usuario con el documento: "+data.get("documento_usuario").asText(),HttpStatus.BAD_REQUEST);
+				//ELSE NO EXISTE USUARIO
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+		
+	
+	@DeleteMapping("/usuario")
+	public ResponseEntity<Object> deleteUsuario(@RequestBody JsonNode data) throws JsonParseException, JsonMappingException, IOException {
+		String id = data.get("documento_user").asText();
 		try {
 			PersonaUsuario user = _usuario.EntityById(id).get();
 			if (user == null){
-				return new ResponseEntity<Object>("No existe el Propietario con "+id, HttpStatus.NOT_FOUND);
+				return new ResponseEntity<Object>("No existe el usuario con "+id, HttpStatus.NOT_FOUND);
 			}
-			_usuario.Delete(id);
 			return new ResponseEntity<Object>(user, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<Object>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
