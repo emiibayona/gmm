@@ -16,19 +16,19 @@ public class IPersonaUsuarioImp implements IPersonaUsuario {
 	private RepositoryPersonaUsuario _repo;
 	
 	@Override
-	public Iterable<PersonaUsuario> List() {
+	public Iterable<PersonaUsuario> ListarTodos() {
 		// TODO Auto-generated method stub
 		return (Iterable<PersonaUsuario>)_repo.findAll();
 	}
 
 	@Override
-	public Optional<PersonaUsuario> Entity(String login, String password) {
+	public Optional<PersonaUsuario> UserByCredenciales(String login, String password) {
 		// TODO Auto-generated method stub
 		return _repo.findByLoginPassword(login, password);
 	}
 
 	@Override
-	public Optional<PersonaUsuario> EntityById(String documento) {
+	public Optional<PersonaUsuario> UserById(String documento) {
 		// TODO Auto-generated method stub
 		return _repo.findById(documento);
 	}
@@ -68,6 +68,18 @@ public class IPersonaUsuarioImp implements IPersonaUsuario {
 	public Iterable<PersonaUsuario> ListarInactivos() {
 		// TODO Auto-generated method stub
 		return _repo.findAllInactive();
+	}
+
+	@Override
+	public boolean isUserActiveId(String documento) {
+		// TODO Auto-generated method stub
+		return _repo.isActivedId(documento).isPresent();
+	}
+
+	@Override
+	public boolean isUserActiveCredenciales(String login, String password) {
+		// TODO Auto-generated method stub
+		return _repo.isActivedCredenciales(login, password).isPresent();
 	}
 	
 	

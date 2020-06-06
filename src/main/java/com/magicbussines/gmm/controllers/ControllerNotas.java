@@ -57,14 +57,23 @@ public class ControllerNotas {
 	
 	@PostMapping("/")
 	public ResponseEntity<Object> saveNota(@RequestBody JsonNode data) throws JsonParseException, JsonMappingException, IOException{
+		
 		try {
-			Nota nuevaNota = new Nota();
-			//nuevaNota = objectMapper.readValue(data.get("nota").toString(),Nota.class);
-			nuevaNota.setTitulo(data.get("nota").get("titulo").asText());
-			nuevaNota.setTexto(data.get("nota").get("texto").asText());
-			nuevaNota.setUsuario((_usuario.Entity(data.get("user").get("login").asText(), data.get("user").get("password").asText()).get()));
-			nuevaNota = _nota.Save(nuevaNota);
-			return new ResponseEntity<Object>(nuevaNota, HttpStatus.OK);
+			String login = data.get("user").get("login").asText();
+			String password = data.get("user").get("password").asText();
+			if (_usuario.UserActiveCredenciales(login, password) != null) {
+				Nota nuevaNota = new Nota();
+				//nuevaNota = objectMapper.readValue(data.get("nota").toString(),Nota.class);
+				nuevaNota.setTitulo(data.get("nota").get("titulo").asText());
+				nuevaNota.setTexto(data.get("nota").get("texto").asText());
+				nuevaNota.setUsuario((_usuario.Entity(login,password).get()));
+				nuevaNota = _nota.Save(nuevaNota);
+				return new ResponseEntity<Object>(nuevaNota, HttpStatus.OK);
+			} else
+			{
+				return new ResponseEntity<Object>("El usuario con el cual desea ingresar una nota esta desactivado, reporte el error en caso de ser necesario",HttpStatus.NOT_ACCEPTABLE);
+			}
+			
 		} catch(Exception e) {
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
