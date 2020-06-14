@@ -180,6 +180,13 @@ public class ControllerPersona {
 		
 		String id = data.get("user").get("documento").asText();
 		String status = data.get("user").get("status").asText();
+		
+		if (status.equals("activo")) {
+			Optional<PersonaUsuario> usuario = _usuario.UserById(id);
+			if(usuario.isEmpty()) {
+				return new ResponseEntity<Object>("No existe usuario con el documento "+id, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 		Optional<PersonaUsuario> usuario = _usuario.UserById(id);
 		if(usuario.isEmpty()) {
 			return new ResponseEntity<Object>("No existe usuario con el documento "+id, HttpStatus.INTERNAL_SERVER_ERROR);
