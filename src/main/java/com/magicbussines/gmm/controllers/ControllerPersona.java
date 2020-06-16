@@ -6,10 +6,13 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.magicbussines.gmm.interfaces.IPersonaInquilino;
 import com.magicbussines.gmm.interfaces.IPersonaPropietario;
 import com.magicbussines.gmm.interfaces.IPersonaUsuario;
@@ -39,18 +47,29 @@ public class ControllerPersona {
 	private IPersonaInquilino _inqulino;
 	@Autowired
 	private IPersonaUsuario _usuario;
+	@Autowired
+	private ObjectMapper obj;
 	
 	
 	// ***********************************************************************************************************************
 	// ================================= SECCION DEL CONTROLADOR PARA PERSONA_PROPIETARIO =================================== 
 	// ***********************************************************************************************************************
-	@GetMapping("/propietario/")
+	@GetMapping("/propietario/listar")
 	public ResponseEntity<Object> PropietarioList() {
 		List<PersonaPropietario> propietarios = (List<PersonaPropietario>) _propietario.List();
 		if(propietarios.isEmpty()) {
 			return new ResponseEntity<Object>("FALLO", HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Object>(propietarios,HttpStatus.OK);
+	}
+	
+	@GetMapping("/propietario/{}")
+	public ResponseEntity<Object> Propietario(@PathVariable(value = "id") String id) {
+		Optional<PersonaPropietario> propietario = _propietario.Entity(id);
+		if(propietario.isEmpty()) {
+			return new ResponseEntity<Object>("No existe propietario con documento", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Object>(propietario,HttpStatus.OK);
 	}
 		
 	
@@ -174,24 +193,27 @@ public class ControllerPersona {
 	// ***********************************************************************************************************************
 		
 	
-	@GetMapping("/usuario")
-	public ResponseEntity<Object> userUser(@RequestBody JsonNode data) throws JsonParseException, JsonMappingException, IOException {
-		
-		
-		String id = data.get("user").get("documento").asText();
-		String status = data.get("user").get("status").asText();
-		
-		if (status.equals("activo")) {
-			Optional<PersonaUsuario> usuario = _usuario.UserById(id);
+	@GetMapping("/usuario/{login}")
+	public ResponseEntity<Object> userUser(@PathVariable(value = "login") String login) throws JsonParseException, JsonMappingException, IOException {
+		//String id = data.get("user").get("documento").asText();
+		//String status = data.get("user").get("status").asText();
+		try {
+			Optional<PersonaUsuario> usuario = _usuario.UserById(login);
 			if(usuario.isEmpty()) {
-				return new ResponseEntity<Object>("No existe usuario con el documento "+id, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<Object>("No existe usuario con el documento "+login, HttpStatus.INTERNAL_SERVER_ERROR);
+			} else {
+				
+				//CREO UN JSON Y LE AGREGO NODOS				
+				JsonNode jsonUser = obj.createObjectNode();
+				((ObjectNode) jsonUser).put("Activado", _usuario.isUserActiveId(login));
+				((ObjectNode) jsonUser).putPOJO("User", usuario);
+
+				return new ResponseEntity<Object>(jsonUser,HttpStatus.OK);
 			}
 		}
-		Optional<PersonaUsuario> usuario = _usuario.UserById(id);
-		if(usuario.isEmpty()) {
-			return new ResponseEntity<Object>("No existe usuario con el documento "+id, HttpStatus.INTERNAL_SERVER_ERROR);
+		catch (Exception e) {
+			return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<Object>(usuario,HttpStatus.OK);
 	}
 	
 	// ***********************************************************************************************************************
@@ -210,7 +232,7 @@ public class ControllerPersona {
 	}
 	
 	// ***********************************************************************************************************************
-	// *************
+	// ***********************************************************************************************************************
 	
 	@PostMapping("/usuario")
 	public ResponseEntity<Object> saveUsuario(@Valid @RequestBody PersonaUsuario data){
