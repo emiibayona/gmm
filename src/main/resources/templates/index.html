@@ -10,13 +10,13 @@
         <div class="container mt-4">
             <div class="card border-info">
                 <div class="card-header bg-info text-white">
-                    <a th:href="@{/agregarGet}" class="btn">Agregar Persona</a>
+                    <a class="btn">Agregar Persona</a>
                 </div>
                 <div class="card-body">
                     <table border="1">
                         <thead>
                             <tr>
-                        <th>ID</th>
+                        <th></th>
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Telefono</th>
@@ -24,12 +24,8 @@
                         </tr>
                         </thead>
                         <tbody>  
-                            <tr th:each="usuario:${usuarios}">
-                            <td th:text="${usuario.ci}"></td>
-                            <td th:text="${usuario.nombre}"></td>
-                            <td th:text="${usuario.apellido}"></td>
-                            <td th:text="${usuario.telefono}"></td>
-                            <td><a th:href="@{/editar/}+${usuario.ci}"> Editar</a> / <a th:href="@{/borrar/}+${usuario.ci}"> Borrar </a></td>
+                            <tr >
+                            <td>coso</td>
                             </tr>                       
                         </tbody>
                     </table>

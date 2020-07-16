@@ -8,13 +8,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.validator.constraints.UniqueElements;
 
 // Esta entidad almacena contactos referidos a una persona, multivalued respecto de telefono
 
 @MappedSuperclass
 public abstract class Contacto implements Serializable{
 
-	@Id
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7729165706197007639L;
 	@Column
 	protected String telefono;
 	@Column

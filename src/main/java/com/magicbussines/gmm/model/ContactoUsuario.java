@@ -8,6 +8,10 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ContactoUsuario extends Contacto{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@ManyToOne
 	@JoinColumn(name="documento")

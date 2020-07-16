@@ -1,6 +1,7 @@
 package com.magicbussines.gmm.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +31,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.magicbussines.gmm.common.DTOUsuario;
+import com.magicbussines.gmm.common.MapperPersona;
+//import com.magicbussines.gmm.interfaces.IContactoUsuario;
 import com.magicbussines.gmm.interfaces.IPersonaInquilino;
 import com.magicbussines.gmm.interfaces.IPersonaPropietario;
 import com.magicbussines.gmm.interfaces.IPersonaUsuario;
+import com.magicbussines.gmm.model.ContactoUsuario;
 import com.magicbussines.gmm.model.PersonaInquilino;
 import com.magicbussines.gmm.model.PersonaPropietario;
 import com.magicbussines.gmm.model.PersonaUsuario;
@@ -47,8 +52,12 @@ public class ControllerPersona {
 	private IPersonaInquilino _inqulino;
 	@Autowired
 	private IPersonaUsuario _usuario;
+	//@Autowired
+	//private IContactoUsuario _contactoUsuario;
 	@Autowired
 	private ObjectMapper obj;
+	@Autowired
+	private MapperPersona _map;
 	
 	
 	// ***********************************************************************************************************************
@@ -174,7 +183,12 @@ public class ControllerPersona {
 		if(usuarios.isEmpty()) {
 			return new ResponseEntity<Object>("No hay usuarios registrados", HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<Object>(usuarios,HttpStatus.OK);
+		List<DTOUsuario> dtoUsers = new ArrayList<DTOUsuario>();
+		
+		for (PersonaUsuario usuarioList : usuarios) {
+			dtoUsers.add(_map.UsuarioToDTO(usuarioList));
+		}
+		return new ResponseEntity<Object>(dtoUsers,HttpStatus.OK);
 	}
 	
 		// ***********************************************************************************************************************
@@ -183,10 +197,16 @@ public class ControllerPersona {
 	@GetMapping("/usuario/inactivos")
 	public ResponseEntity<Object> UsuarioListaInactivos() {
 		List<PersonaUsuario> usuarios = (List<PersonaUsuario>) _usuario.ListarInactivos();
+		
 		if(usuarios.isEmpty()) {
 			return new ResponseEntity<Object>("No hay usuarios registrados", HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<Object>(usuarios,HttpStatus.OK);
+		
+		List<DTOUsuario> dtoUsers = new ArrayList<DTOUsuario>();
+		for (PersonaUsuario usuarioList : usuarios) {
+			dtoUsers.add(_map.UsuarioToDTO(usuarioList));
+		}
+		return new ResponseEntity<Object>(dtoUsers,HttpStatus.OK);
 	}
 	
 	// ***********************************************************************************************************************
@@ -204,11 +224,11 @@ public class ControllerPersona {
 			} else {
 				
 				//CREO UN JSON Y LE AGREGO NODOS				
-				JsonNode jsonUser = obj.createObjectNode();
-				((ObjectNode) jsonUser).put("Activado", _usuario.isUserActiveId(login));
-				((ObjectNode) jsonUser).putPOJO("User", usuario);
-
-				return new ResponseEntity<Object>(jsonUser,HttpStatus.OK);
+				//JsonNode dtoUser = obj.createObjectNode();
+				//((ObjectNode) dtoUser).putPOJO("User", usuario);
+				//((ObjectNode) dtoUser).putPOJO("UserDTO", _map.UsuarioToDTO(usuario.get()));
+				DTOUsuario dtoUser = _map.UsuarioToDTO(usuario.get());
+				return new ResponseEntity<Object>(dtoUser,HttpStatus.OK);
 			}
 		}
 		catch (Exception e) {
@@ -216,21 +236,36 @@ public class ControllerPersona {
 		}
 	}
 	
-	// ***********************************************************************************************************************
-	// ***********************************************************************************************************************
-	
-	@GetMapping("/usuario/activo")
-	public ResponseEntity<Object> userUserActivo(@RequestBody JsonNode data) throws JsonParseException, JsonMappingException, IOException {
-		
-		String id = data.get("documento").asText();
-		if(!_usuario.isUserActiveId(id)) {
-			return new ResponseEntity<Object>("No esta activo usuario con el documento "+id, HttpStatus.CONFLICT);
-		}else {
-			PersonaUsuario usuario = _usuario.UserById(id).get();
-			return new ResponseEntity<Object>(usuario,HttpStatus.OK);
+	/*
+	 * 
+	 * 
+	@GetMapping("/usuario/contacto/{documento}")
+	public ResponseEntity<Object> userContacto(@PathVariable(value = "documento") String documento) throws JsonParseException, JsonMappingException, IOException {
+		//String id = data.get("user").get("documento").asText();
+		//String status = data.get("user").get("status").asText();
+		try {
+			Optional<ContactoUsuario> usuario = _contactoUsuario.Entity(documento);
+			if(usuario.isEmpty()) {
+				return new ResponseEntity<Object>("No existe usuario con el documento "+documento, HttpStatus.INTERNAL_SERVER_ERROR);
+			} else {
+				
+				//CREO UN JSON Y LE AGREGO NODOS				
+				//JsonNode dtoUser = obj.createObjectNode();
+				//((ObjectNode) dtoUser).putPOJO("User", usuario);
+				//((ObjectNode) dtoUser).putPOJO("UserDTO", _map.UsuarioToDTO(usuario.get()));
+				//DTOUsuario dtoUser = _map.UsuarioToDTO(usuario.get());
+				return new ResponseEntity<Object>(usuario,HttpStatus.OK);
+			}
+		}
+		catch (Exception e) {
+			return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+	*
+	*
+	*
+	*/
+
 	// ***********************************************************************************************************************
 	// ***********************************************************************************************************************
 	
@@ -299,7 +334,7 @@ public class ControllerPersona {
 			if (user == null){
 				return new ResponseEntity<Object>("No existe el usuario con "+id, HttpStatus.NOT_FOUND);
 			}
-			return new ResponseEntity<Object>(user, HttpStatus.OK);
+			return new ResponseEntity<Object>(_map.UsuarioToDTO(user), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
