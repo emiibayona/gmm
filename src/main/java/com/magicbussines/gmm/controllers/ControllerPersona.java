@@ -1,6 +1,7 @@
 package com.magicbussines.gmm.controllers;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,10 +60,12 @@ public class ControllerPersona {
 	@Autowired
 	private MapperPersona _map;
 	
-	
+	// ***********************************************************************************************************************
 	// ***********************************************************************************************************************
 	// ================================= SECCION DEL CONTROLADOR PARA PERSONA_PROPIETARIO =================================== 
 	// ***********************************************************************************************************************
+	// ***********************************************************************************************************************
+	
 	@GetMapping("/propietario/listar")
 	public ResponseEntity<Object> PropietarioList() {
 		List<PersonaPropietario> propietarios = (List<PersonaPropietario>) _propietario.List();
@@ -80,7 +83,7 @@ public class ControllerPersona {
 		}
 		return new ResponseEntity<Object>(propietario,HttpStatus.OK);
 	}
-		
+	
 	
 	@PostMapping("/propietario/")
 	public ResponseEntity<Object> savePropietario(@Valid @RequestBody PersonaPropietario data){
@@ -326,13 +329,16 @@ public class ControllerPersona {
 	// ***********************************************************************************************************************
 		
 	
-	@DeleteMapping("/usuario")
-	public ResponseEntity<Object> deleteUsuario(@RequestBody JsonNode data) throws JsonParseException, JsonMappingException, IOException {
-		String id = data.get("documento_user").asText();
+	@DeleteMapping("/usuario/{login}")
+	public ResponseEntity<Object> deleteUsuario(@PathVariable(value = "login") String login) throws JsonParseException, JsonMappingException, IOException {
+		String id = login;
 		try {
-			PersonaUsuario user = _usuario.UserById(id).get();
+			PersonaUsuario user = _usuario.UserByLogin(login).get();
 			if (user == null){
 				return new ResponseEntity<Object>("No existe el usuario con "+id, HttpStatus.NOT_FOUND);
+			} else
+			{
+				_usuario.Delete(user.getDocumento());
 			}
 			return new ResponseEntity<Object>(_map.UsuarioToDTO(user), HttpStatus.OK);
 		} catch (Exception e) {
