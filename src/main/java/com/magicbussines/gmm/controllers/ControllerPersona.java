@@ -75,7 +75,7 @@ public class ControllerPersona {
 		return new ResponseEntity<Object>(propietarios,HttpStatus.OK);
 	}
 	
-	//
+	//consulta del propietario por id
 	@GetMapping("/propietario/{id}")
 	public ResponseEntity<Object> Propietario(@PathVariable(value = "id") String id) {
 		Optional<PersonaPropietario> propietario = _propietario.Entity(id);
